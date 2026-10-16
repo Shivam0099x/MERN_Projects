@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
 
-const Form = () => {
-    const [formData, setFormData] = useState({
-        title: "",
-        description: ""
-    })
+const Form = ({formData, setFormData, setIsUpdated, isUpdated}) => {
+    
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
@@ -15,11 +12,21 @@ const Form = () => {
         setFormData({ ...formData, [name]: value })
     }
 
+    console.log(isUpdated)
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
             setLoading(true)
-            await axios.post("http://localhost:3000/notes", formData)
+
+            if(isUpdated){
+               await axios.put(`http://localhost:3000/notes/${isUpdated._id}`, formData)
+               setIsUpdated(null)
+            }else{
+                await axios.post("http://localhost:3000/notes", formData)
+            }
+
+
             setFormData({ title: "", description: "" })
             navigate("/")
         } catch (err) {
@@ -31,7 +38,7 @@ const Form = () => {
     }
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-10">
+        <div className="min-h-screen w-full bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-10">
             <div className="mx-auto max-w-xl">
 
                 {/* Back link */}

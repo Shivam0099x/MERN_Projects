@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 
-const HomePage = () => {
+const HomePage = ({setFormData, setIsUpdated}) => {
   const [notes, setNotes] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
@@ -24,12 +24,18 @@ const HomePage = () => {
 
     try {
       await axios.delete(`http://localhost:3000/notes/${id}`)
-      // Optimistic update — remove from UI immediately
-      setNotes((prev) => prev.filter((note) => note.id !== id))
+
+      setNotes((prev) => prev.filter((note) => note._id !== id))
     } catch (err) {
       console.error(err)
       alert("Failed to delete note")
     }
+  }
+
+  const handleUpdate =(elem)=>{
+      setFormData(elem)
+      setIsUpdated(elem)
+      navigate("/form")
   }
 
   useEffect(() => {
@@ -37,7 +43,7 @@ const HomePage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-10">
+    <div className="min-h-screen w-full bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-10">
       <div className="mx-auto max-w-6xl">
 
         {/* Header */}
@@ -81,7 +87,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {notes.map((elem) => (
               <div
-                key={elem.id}
+                key={elem._id}
                 className="group flex flex-col rounded-2xl border border-slate-700/60 bg-slate-800/70 
                            p-5 shadow-lg backdrop-blur-sm transition-all duration-200 
                            hover:-translate-y-1 hover:border-blue-500/60 hover:bg-slate-800 
@@ -97,21 +103,21 @@ const HomePage = () => {
 
                 {/* Card Footer with Actions */}
                 <div className="mt-4 flex items-center justify-between border-t border-slate-700/60 pt-3">
-                  <span className="text-xs text-slate-500">Note #{elem.id}</span>
+                  <span className="text-xs text-slate-500">Note #{elem._id}</span>
 
                   <div className="flex items-center gap-2">
-                    <NavLink
-                      to={`/form/${elem.id}`}
+                    <button
+                      onClick={()=>handleUpdate(elem)}
                       className="rounded-lg bg-amber-500/10 px-3 py-1.5 text-xs font-medium 
                                  text-amber-400 transition hover:bg-amber-500/20 
                                  hover:text-amber-300 focus:outline-none focus:ring-2 
                                  focus:ring-amber-400/50"
                     >
                       Update
-                    </NavLink>
+                    </button>
 
                     <button
-                      onClick={() => handleDelete(elem.id)}
+                      onClick={() => handleDelete(elem._id)}
                       className="rounded-lg bg-red-500/10 px-3 py-1.5 text-xs font-medium 
                                  text-red-400 transition hover:bg-red-500/20 
                                  hover:text-red-300 focus:outline-none focus:ring-2 
