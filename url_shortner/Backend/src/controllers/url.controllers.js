@@ -13,6 +13,13 @@ export const createUrl = async (req , res)=>{
             })
         }
 
+         if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid Url. Url must start with http:// or https://`
+            })
+        }
+
         const newUrl = await Url.create({
             url,
             shortUrl : genCode(),
