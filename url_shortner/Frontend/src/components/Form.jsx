@@ -1,11 +1,25 @@
 import React, { useState } from "react"
+import axios from "axios"
 
 const Form = () => {
 
+    const [input, setInput] = useState("")
+    // const [url, setUrl] = useState(null)
+
+    const shortUrl = async ()=>{
+    const res = await axios.post("http://localhost:5000/url", {url : input})
+    console.log(res)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-   
+    // setUrl(input)
+
+    await shortUrl()
+
   }
+
+  
 
   const handleCopy = async () => {
     try {
@@ -31,6 +45,8 @@ const Form = () => {
           <input
             id="url"
             type="text"
+            value={input}
+            onChange={(e)=> setInput(e.target.value)}
             placeholder="https://example.com/very/long/url"
             className="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition disabled:bg-gray-100"
           />
