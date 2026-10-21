@@ -1,4 +1,5 @@
 import app from "./app/app.js"
+import urlRoutes from "./routes/url.routes.js"
 
 
 app.get("/", (req, res)=>{
@@ -7,3 +8,5 @@ app.get("/", (req, res)=>{
         message : `Health Check Route...`
     })
 })
+
+app.use("/url", urlRoutes )
